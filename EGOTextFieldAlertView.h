@@ -26,7 +26,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface EGOTextFieldAlertView : UIAlertView {
+@interface EGOTextFieldAlertView : UIAlertView <UITextFieldDelegate> {
 @private
 	NSMutableArray* __textFields; // Single underscore is used in UIAlertView
 	BOOL overrodeHeight;

@@ -42,10 +42,9 @@
 
 	if([self numberOfTextFields] > 0) {
 		for(UITextField* textField in __textFields) {
-			[textField.superview removeFromSuperview];
 			[textField removeFromSuperview];
 		}
-
+		
 		CGFloat offsetY = 0.0f;
 		
 		for(UIView* view in self.subviews) {
@@ -64,9 +63,9 @@
 
 		for(UITextField* textField in __textFields) {
 			EGOAlertTextFieldBack* backView = [[EGOAlertTextFieldBack alloc] initWithFrame:CGRectMake(11.0f, offsetY, 262.0f, 31.0f)];
-			textField.frame = CGRectMake(5.0f, 4.0f, backView.frame.size.width-10.0f, backView.frame.size.height-9.0f);
-			[backView addSubview:textField];
+			textField.frame = CGRectMake(backView.frame.origin.x + 5.0f, backView.frame.origin.y + 4.0f, backView.frame.size.width-10.0f, backView.frame.size.height-9.0f);
 			[self addSubview:backView];
+			[self addSubview:textField];
 			
 			offsetY = CGRectGetMaxY(backView.frame) + 10.0f;
 			[backView release];
@@ -84,11 +83,15 @@
 
 - (void)show {
 	if([self numberOfTextFields] > 0) {
-		self.transform = CGAffineTransformTranslate(self.transform, 0.0f,  150.0f);
+		// josecastillo: Increased delay from 0.4 to 1.0. 
 		
-		// A delay is used here, because if the show animation gets choppy if the
-		// keyboard is animated up at the same time, not sure why.
-		[self.firstTextField performSelector:@selector(becomeFirstResponder) withObject:nil afterDelay:0.4];
+		// iOS 4 will transform the UIAlertView up when a textField becomes first responder, but
+		// only if the UIAlertView is done displaying. If we call becomeFirstResponder while the
+		// UIAlertView is still popping up, it will not slide up.
+		
+		// 0.7 works on new hardware, but on old hardware like the 2G iPod Touch, the alert takes 
+		// a bit longer to start animating; 1.0 seems long enough. Wish I had a more solid solution. 
+		[self.firstTextField performSelector:@selector(becomeFirstResponder) withObject:nil afterDelay:1.0];
 	}
 
 	[super show];
@@ -103,6 +106,16 @@
 	[super setFrame:frame];
 }
 
+- (void)dismissWithClickedButtonIndex:(NSInteger)buttonIndex animated:(BOOL)animated
+{
+	if([self numberOfTextFields] > 0)
+		for(UITextField* textField in __textFields)
+			if ([textField isFirstResponder])
+				[textField resignFirstResponder];
+	
+	[super dismissWithClickedButtonIndex:buttonIndex animated:animated];
+}
+
 - (void)addTextField:(UITextField*)textField {
 	if(!__textFields) {
 		__textFields = [[NSMutableArray alloc] initWithCapacity:1];
@@ -111,6 +124,8 @@
 	textField.backgroundColor = [UIColor clearColor];
 	textField.font = [UIFont systemFontOfSize:19.0f];
 	textField.keyboardAppearance = UIKeyboardAppearanceAlert;
+	textField.returnKeyType = UIReturnKeyNext;
+	textField.delegate = self;
 	
 	[__textFields addObject:textField];
 	
@@ -159,6 +174,24 @@
 		return nil;
 	}
 }
+
+#pragma mark UITextFieldDelegate method
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+	NSUInteger count = [__textFields count];
+	if (count < 2)
+		return NO;
+	
+	NSUInteger index = [__textFields indexOfObject:textField];
+	if(index < count - 1)
+		[[__textFields objectAtIndex:index + 1] becomeFirstResponder];
+	else
+		[[__textFields objectAtIndex:0] becomeFirstResponder];
+	return NO;
+}
+
+#pragma mark Memory management
 
 - (void)dealloc {
 	[__textFields release];

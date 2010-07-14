@@ -204,6 +204,7 @@
 				GCC_PREFIX_HEADER = EGOTextFieldAlertViewDemo_Prefix.pch;
 				INFOPLIST_FILE = "EGOTextFieldAlertViewDemo-Info.plist";
 				PRODUCT_NAME = EGOTextFieldAlertViewDemo;
+				SDKROOT = iphoneos4.0;
 			};
 			name = Debug;
 		};
@@ -216,6 +217,7 @@
 				GCC_PREFIX_HEADER = EGOTextFieldAlertViewDemo_Prefix.pch;
 				INFOPLIST_FILE = "EGOTextFieldAlertViewDemo-Info.plist";
 				PRODUCT_NAME = EGOTextFieldAlertViewDemo;
+				SDKROOT = iphoneos4.0;
 			};
 			name = Release;
 		};
