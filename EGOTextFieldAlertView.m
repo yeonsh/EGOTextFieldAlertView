@@ -83,7 +83,11 @@
 
 - (void)show {
 	if([self numberOfTextFields] > 0) {
-		// josecastillo: Increased delay from 0.4 to 1.0. 
+		// iOS 3.x and below doesn't animate the translation, so we have to do it ourselves, 
+		// otherwise the keyboard will cover up the alertView. 
+		NSArray *systemVersion = [[[UIDevice currentDevice] systemVersion] componentsSeparatedByString:@"."];
+		if ([systemVersion count] && ([[systemVersion objectAtIndex:0] intValue] <= 3))
+			self.transform = CGAffineTransformTranslate(self.transform, 0.0f,  150.0f);
 		
 		// iOS 4 will transform the UIAlertView up when a textField becomes first responder, but
 		// only if the UIAlertView is done displaying. If we call becomeFirstResponder while the

@@ -203,6 +203,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = EGOTextFieldAlertViewDemo_Prefix.pch;
 				INFOPLIST_FILE = "EGOTextFieldAlertViewDemo-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
 				PRODUCT_NAME = EGOTextFieldAlertViewDemo;
 				SDKROOT = iphoneos4.0;
 			};
