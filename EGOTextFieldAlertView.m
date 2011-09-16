@@ -48,7 +48,9 @@
 		CGFloat offsetY = 0.0f;
 		
 		for(UIView* view in self.subviews) {
-			if(![view isKindOfClass:[UIControl class]]) {
+			if(![view isKindOfClass:[UIControl class]] 
+               && ![view isKindOfClass:[UIImageView class]]
+               && ![view isKindOfClass:[EGOAlertTextFieldBack class]]) {
 				if(CGRectGetMaxY(view.frame) > offsetY) {
 					offsetY = CGRectGetMaxY(view.frame);
 				}
